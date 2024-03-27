@@ -22,8 +22,7 @@ Mod并没有停止维护，只是最近比较忙，和一些精神上的问题�
 - 需要Fabric版本
 - 更新Forge版本至1.20.4
 <br>
-**如有其他问题欢迎在issue提出**<br>
-**-----------**<br>
+如有其他问题欢迎在issue提出<br>
 
 ## Configurable List
 
