@@ -4,7 +4,6 @@
 - [CurseForge](https://www.curseforge.com/minecraft/mc-mods/easylan)
 - [Modrinth](https://modrinth.com/mod/easylan)
 - [MC百科](https://www.mcmod.cn/class/11373.html)
-- [Wiki](https://docs.axtn.net/docs/EasyLAN/)（writing..）
 
 <br>
 
@@ -31,10 +30,10 @@
 - 管理员权限（**/op | /deop**）
 - 世界保存（**/save-all | /save-off | /save-on**）
 
-### *其他*
+### *扩展功能*
+**扩展功能未经兼容性测试，如果出现游戏崩溃问题请尝试关闭**
 
-- HttpAPI 信息（HTTPApi 支持 | [相关文档](https://docs.axtn.net/docs/EasyLan/HttpAPI)）<br>
-  ***(HttpAPI存在兼容性问题，可能会导致退出游戏时崩溃。 详情请参阅https://github.com/XiaoXianHW/EasyLAN/issues/2)***
+- HttpAPI 信息（游戏状态-Json格式 | 端口: 28960 | 地址: 127.0.0.1）<br>
 - LAN 信息输出（游戏里输出内置服务端的一些信息）
 
 <br>
@@ -43,8 +42,9 @@
 
 ## 支持版本
 
-- 1.7.2 - 1.20.1 [Forge]<br>
-  **不支持 1.13.2**
+- 1.7.2 以上的主流（游玩率高）版本 [Forge]<br>
+  **不支持 1.13.2**<br>
+  **1.7.2 未经测试，可用性尚不确定**
 - 在从EasyLAN旧版本更新至新版本时请删除`.minecraft\config\easylan.cfg`文件，否则可能会导致游戏崩溃（具体说明可以看更新日志）
 
 <br>
@@ -56,7 +56,7 @@
 贡献的翻译将添加到 **下一个 Minecraft 版本**（如果是Mod本体版本号更新，则添加至完整版本）
 
 - 1.7.2 - 1.12.2 (xx_XX.lang; **例如: zh_CN.lang**)
-- 1.14.4 - 1.20.1 (xx_xx.json; **例如: zh_cn.json**)
+- 1.14.4 以上 (xx_xx.json; **例如: zh_cn.json**)
 
 <br>
 

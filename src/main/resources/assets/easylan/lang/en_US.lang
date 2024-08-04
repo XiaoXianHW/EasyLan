@@ -8,7 +8,7 @@ easylan.public=Public
 
 easylan.text.setting1=Basic Settings
 easylan.text.setting2=Command Support
-easylan.text.setting3=Other
+easylan.text.setting3=Extensions(Beta)
 
 easylan.text.pvp=Allow PVP
 easylan.text.onlineMode=Online Mode
@@ -26,11 +26,13 @@ easylan.text.lanInfo=LAN output
 easylan.text.port=Port
 easylan.text.CtPort=CustomPort
 easylan.text.port.used=Port is already in use
-easylan.text.port.invalid=Invalid Port value!（100-65535）
+easylan.text.port.invalid=Invalid Port value!(100-65535)
 
 easylan.text.maxplayer=Max Player
-easylan.text.maxplayer.invalid=Invalid MaxPlayer value! (2-500000)
+easylan.text.maxplayer.invalid=Invalid MaxPlayer value!(2-500000)
 
 easylan.chat.CtPort=Successfully opened custom port
+easylan.chat.CtPortError=Open Custom Port Error
 easylan.chat.CtPlayer=Successfully set max players
+easylan.chat.CtPlayerError=Set MaxPlayer Error
 easylan.chat.isPublic=isPublic

@@ -1,11 +1,10 @@
 # EasyLAN
 **A Minecraft Forge Mod for Custom LAN Servers Related settings for customizing the LAN server (built-in server)**<br>
-| [中文文档](https://github.com/XiaoXianHW/EasyLAN/blob/1.7.10/README_CN.md) |
+| [中文文档](https://github.com/XiaoXianHW/EasyLAN/blob/1.7.2/README_CN.md) |
 
 - [CurseForge](https://www.curseforge.com/minecraft/mc-mods/easylan)
 - [Modrinth](https://modrinth.com/mod/easylan)
 - [MC百科](https://www.mcmod.cn/class/11373.html)
-- [Wiki](https://docs.axtn.net/docs/EasyLAN/)（writing..）
 
 <br>
 
@@ -32,9 +31,10 @@
 - Operator（**/op | /deop**）
 - SaveAll（**/save-all | /save-off | /save-on**）
 
-### *Other*
+### *Extensions*
+**Extensions have not been tested for compatibility, please try to disable them if you have problems with the game crashing.**
 
-- HttpAPI Info（HTTPApi Support | [Docs](https://docs.axtn.net/docs/EasyLan/HttpAPI)）<br>
+- HttpAPI Info（HTTPApi Support | port: 28960 | address: 127.0.0.1）<br>
   ***(There are compatibility issues with HttpAPI, which may cause a crash when exiting the game. For details, please refer to https://github.com/XiaoXianHW/EasyLAN/issues/2)***
 - LAN output（Game Chat Output LAN Server Info）
 
@@ -44,8 +44,9 @@
 
 ## Support Version
 
-- 1.7.2 - 1.20.1 [Forge]<br>
-  **Unsupport 1.13.2**
+- 1.7.2 - Latest version (maybe [Forge]<br>
+  **Unsupported 1.13.2**<br>
+  **1.7.2 Untested, usability is not yet certain**
 - Please delete the `.minecraft\config\easylan.cfg` file when updating from an old version of EasyLAN to a new version, otherwise the game may crash (see the update log for details)
 
 <br>
@@ -57,7 +58,7 @@ To contribute translations, please refer to and upload your language files to `s
 Contributed translations will be added in the **next Minecraft version** (or full version if it's a major refactoring update)
 
 - 1.7.2 - 1.12.2 (xx_XX.lang; **eg: zh_CN.lang**)
-- 1.14.4 - 1.20.1 (xx_xx.json; **eg: zh_cn.json**)
+- 1.14.4 - Latest version (xx_xx.json; **eg: zh_cn.json**)
 
 <br>
 
