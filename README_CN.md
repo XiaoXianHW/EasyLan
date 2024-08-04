@@ -4,7 +4,6 @@
 - [CurseForge](https://www.curseforge.com/minecraft/mc-mods/easylan)
 - [Modrinth](https://modrinth.com/mod/easylan)
 - [MC百科](https://www.mcmod.cn/class/11373.html)
-- [Wiki](https://docs.axtn.net/docs/EasyLAN/)（writing..）
 
 <br>
 
@@ -45,6 +44,7 @@
 
 - 1.7.2 - 1.20.1 [Forge]<br>
   **不支持 1.13.2**
+  **1.7.2 未经测试，可用性尚不确定**
 - 在从EasyLAN旧版本更新至新版本时请删除`.minecraft\config\easylan.cfg`文件，否则可能会导致游戏崩溃（具体说明可以看更新日志）
 
 <br>

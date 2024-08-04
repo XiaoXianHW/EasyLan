@@ -7,13 +7,14 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'org.nanohttpd:nanohttpd:2.3.1'
     }
 }
 
 apply plugin: 'forge'
 
-version = "1.2"
-group= "org.xiaoxian.easylan" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+version = "1.5"
+group= "org.xiaoxian.easylan"
 archivesBaseName = "EasyLAN"
 
 sourceCompatibility = 1.8
@@ -23,11 +24,6 @@ compileJava.options.encoding = 'UTF-8'
 
 minecraft {
     version = "1.7.2-10.12.2.1161-mc172"
-    assetDir = "eclipse/assets"
-}
-
-dependencies {
-
 }
 
 processResources

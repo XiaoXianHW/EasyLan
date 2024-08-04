@@ -32,8 +32,10 @@ public class GuiShareToLanEdit {
 
     public static class GuiShareToLanModified extends GuiShareToLan {
 
+        GuiScreen parentScreen;
         public GuiShareToLanModified(GuiScreen parentScreen) {
             super(parentScreen);
+            this.parentScreen = parentScreen;
         }
 
         @Override
@@ -74,7 +76,7 @@ public class GuiShareToLanEdit {
         protected void actionPerformed(GuiButton button) {
             super.actionPerformed(button);
             if (button.id == 102) {
-                mc.displayGuiScreen(new GuiIngameMenu());
+                mc.displayGuiScreen(parentScreen);
             }
             if (button.id == 101) {
                 ConfigUtil.set("Port", PortText);

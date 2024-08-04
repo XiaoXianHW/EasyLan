@@ -1,13 +1,10 @@
 package org.xiaoxian.lan;
 
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
+import fi.iki.elonen.NanoHTTPD;
 import net.minecraft.entity.player.EntityPlayerMP;
+import com.google.gson.Gson;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +14,7 @@ import static org.xiaoxian.lan.ShareToLan.playerList;
 
 public class ApiLanStatus {
 
-    public static HttpServer server2;
+    public static SimpleHttpServer server2;
     private static final Map<String, String> data = new HashMap<>();
     public static List<String> playerIDs = new ArrayList<>();
 
@@ -25,81 +22,57 @@ public class ApiLanStatus {
         if (server2 != null) {
             throw new IllegalStateException("HttpServer already started");
         }
-        server2 = HttpServer.create(new InetSocketAddress(28960), 0);
-        server2.createContext("/status", new StatusHandler());
-        server2.createContext("/playerlist", new PlayerListHandler());
-        server2.setExecutor(null);
-        server2.start();
-        System.out.println(server2);
+        server2 = new SimpleHttpServer(28960);
+        server2.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
+        System.out.println("Server started on port 28960");
     }
 
     public synchronized void stop() {
-        System.out.println(server2);
         if (server2 == null) {
             throw new IllegalStateException("Server not running");
         }
-        server2.stop(0);
+        server2.stop();
         server2 = null;
+        System.out.println("Server stopped");
     }
 
     public void set(String key, String value) {
         data.put(key, value);
     }
 
-    static class StatusHandler implements HttpHandler {
-        @Override
-        public void handle(HttpExchange t) throws IOException {
-            StringBuilder sb = new StringBuilder();
-            sb.append("{ ");
-            for (Map.Entry<String, String> entry : data.entrySet()) {
-                sb.append("\"");
-                sb.append(entry.getKey());
-                sb.append("\": \"");
-                sb.append(entry.getValue());
-                sb.append("\", ");
-            }
+    private static class SimpleHttpServer extends NanoHTTPD {
 
-            if (!data.isEmpty()) {
-                sb.setLength(sb.length() - 2);
-            }
-            sb.append(" }");
-
-            String response = sb.toString();
-            t.sendResponseHeaders(200, response.length());
-            OutputStream os = t.getResponseBody();
-            os.write(response.getBytes());
-            os.close();
+        public SimpleHttpServer(int port) {
+            super(port);
         }
-    }
 
-    static class PlayerListHandler implements HttpHandler {
         @Override
-        public void handle(HttpExchange t) throws IOException {
+        public Response serve(IHTTPSession session) {
+            String uri = session.getUri();
+            if ("/status".equals(uri)) {
+                return handleStatus();
+            } else if ("/playerlist".equals(uri)) {
+                return handlePlayerList();
+            } else {
+                return newFixedLengthResponse(Response.Status.NOT_FOUND, "text/plain", "Not Found");
+            }
+        }
+
+        private Response handleStatus() {
+            Map<String, String> responseMap = new HashMap<>(data);
+            Gson gson = new Gson();
+            String jsonResponse = gson.toJson(responseMap);
+            return newFixedLengthResponse(Response.Status.OK, "application/json", jsonResponse);
+        }
+
+        private Response handlePlayerList() {
             playerIDs.clear();
             for (EntityPlayerMP player : playerList) {
                 playerIDs.add(player.getDisplayName());
             }
-
-            StringBuilder sb = new StringBuilder();
-            sb.append("[ ");
-            for (String playerID : playerIDs) {
-                sb.append("\"");
-                sb.append(playerID);
-                sb.append("\", ");
-            }
-
-            if (!playerIDs.isEmpty()) {
-                sb.setLength(sb.length() - 2);
-            }
-            sb.append(" ]");
-
-            String response = sb.toString();
-
-            t.sendResponseHeaders(200, response.length());
-            OutputStream os = t.getResponseBody();
-            os.write(response.getBytes());
-            os.close();
+            Gson gson = new Gson();
+            String jsonResponse = gson.toJson(playerIDs);
+            return newFixedLengthResponse(Response.Status.OK, "application/json", jsonResponse);
         }
     }
 }
-
