@@ -24,7 +24,7 @@ public class ApiLanStatus {
         }
         server2 = new SimpleHttpServer(28960);
         server2.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
-        System.out.println("Server started on port 28960");
+        System.out.println("HttpAPI Server started on port 28960");
     }
 
     public synchronized void stop() {
