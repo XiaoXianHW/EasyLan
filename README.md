@@ -44,7 +44,7 @@
 ## Support Version
 
 - 1.7.2 - 1.20.1 [Forge]<br>
-  **Unsupport 1.13.2**
+  **Unsupport 1.13.2**<br>
   **1.7.2 Untested, usability is not yet certain**
 - Please delete the `.minecraft\config\easylan.cfg` file when updating from an old version of EasyLAN to a new version, otherwise the game may crash (see the update log for details)
 
