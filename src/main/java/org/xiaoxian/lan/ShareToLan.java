@@ -1,7 +1,5 @@
 package org.xiaoxian.lan;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.resources.I18n;
@@ -11,6 +9,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.xiaoxian.gui.GuiShareToLanEdit;
 import org.xiaoxian.util.ChatUtil;
 import org.xiaoxian.util.NetworkUtil;
@@ -53,7 +53,7 @@ public class ShareToLan {
         String fieldName = devMode ? "maxPlayers" : "field_72405_c";
         Minecraft mc = Minecraft.getMinecraft();
         IntegratedServer server = mc.getIntegratedServer();
-        NetworkSystem networkSystem = MinecraftServer.getServer().func_147137_ag();
+        NetworkSystem networkSystem = MinecraftServer.getServer().getNetworkSystem();
 
         /* 判断是否自定义端口号 */
         if (!(GuiShareToLanEdit.PortTextBox.getText().isEmpty())) {
@@ -135,7 +135,7 @@ public class ShareToLan {
             HttpApi.set("spawnAnimals", String.valueOf(spawnAnimals));
             HttpApi.set("spawnNPCs", String.valueOf(spawnNPCs));
             HttpApi.set("allowFlight", String.valueOf(allowFlight));
-            HttpApi.set("difficulty", String.valueOf(server.func_147135_j().getDifficultyResourceKey()));
+            HttpApi.set("difficulty", String.valueOf(server.getDifficulty()));
             HttpApi.set("gameType", String.valueOf(server.getGameType()));
             HttpApi.set("maxPlayer", String.valueOf(server.getMaxPlayers()));
             HttpApi.set("onlinePlayer", String.valueOf(server.getCurrentPlayerCount()));
@@ -154,13 +154,13 @@ public class ShareToLan {
     private void updateApiInfo(IntegratedServer server) {
         ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
         executorService.scheduleAtFixedRate(() -> {
-            HttpApi.set("difficulty", String.valueOf(server.func_147135_j().getDifficultyResourceKey()));
+            HttpApi.set("difficulty", String.valueOf(server.getDifficulty()));
             HttpApi.set("onlinePlayer", String.valueOf(server.getCurrentPlayerCount()));
 
             playerList = (List<EntityPlayerMP>) FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList;
             List<String> playerIDs = new ArrayList<>();
             for (EntityPlayerMP player : playerList) {
-                playerIDs.add(player.getDisplayName());
+                playerIDs.add(player.getName());
             }
             ApiLanStatus.playerIDs = playerIDs;
 

@@ -95,7 +95,7 @@ public class NetworkUtil {
                 }
             }
         } catch (SocketException e) {
-            e.printStackTrace();
+            System.out.println("[EasyLAN] Error getting local IP address: " + e.getMessage());
         }
 
         InetAddress preferredIPv4Address = null;

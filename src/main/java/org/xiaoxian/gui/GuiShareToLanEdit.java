@@ -1,10 +1,9 @@
 package org.xiaoxian.gui;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.input.Keyboard;
 import org.xiaoxian.util.ConfigUtil;
 import org.xiaoxian.util.TextBoxUtil;
@@ -41,11 +40,11 @@ public class GuiShareToLanEdit {
         public void initGui() {
             super.initGui();
 
-            PortTextBox = new TextBoxUtil(4, mc.fontRenderer, this.width / 2 - 155, this.height - 70, 145, 20);
+            PortTextBox = new TextBoxUtil(4, fontRendererObj, this.width / 2 - 155, this.height - 70, 145, 20);
             PortTextBox.setMaxStringLength(5);
             PortTextBox.setText(PortText);
 
-            MaxPlayerBox = new TextBoxUtil(5, mc.fontRenderer, this.width / 2 + 5, this.height - 70, 145, 20);
+            MaxPlayerBox = new TextBoxUtil(5, fontRendererObj, this.width / 2 + 5, this.height - 70, 145, 20);
             MaxPlayerBox.setMaxStringLength(6);
             MaxPlayerBox.setText(MaxPlayerText);
 
@@ -62,16 +61,16 @@ public class GuiShareToLanEdit {
             PortTextBox.drawTextBox();
             MaxPlayerBox.drawTextBox();
 
-            drawString(mc.fontRenderer, I18n.format("easylan.text.port"), this.width / 2 - 155, this.height - 85, 0xFFFFFF);
-            drawString(mc.fontRenderer, PortWarningText, this.width / 2 - 155, this.height - 45, 0xFF0000);
+            drawString(fontRendererObj, I18n.format("easylan.text.port"), this.width / 2 - 155, this.height - 85, 0xFFFFFF);
+            drawString(fontRendererObj, PortWarningText, this.width / 2 - 155, this.height - 45, 0xFF0000);
 
-            drawString(mc.fontRenderer, I18n.format("easylan.text.maxplayer"), this.width / 2 + 5, this.height - 85, 0xFFFFFF);
-            drawString(mc.fontRenderer, MaxPlayerWarningText, this.width / 2 + 5, this.height - 45, 0xFF0000);
+            drawString(fontRendererObj, I18n.format("easylan.text.maxplayer"), this.width / 2 + 5, this.height - 85, 0xFFFFFF);
+            drawString(fontRendererObj, MaxPlayerWarningText, this.width / 2 + 5, this.height - 45, 0xFF0000);
 
         }
 
         @Override
-        protected void actionPerformed(@Nonnull GuiButton button) {
+        protected void actionPerformed(@Nonnull GuiButton button) throws IOException {
             super.actionPerformed(button);
             if (button.id == 101) {
                 ConfigUtil.set("Port", PortText);
@@ -127,7 +126,7 @@ public class GuiShareToLanEdit {
         }
 
         @Override
-        protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+        protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
             PortTextBox.mouseClicked(mouseX, mouseY, mouseButton);
             PortText = PortTextBox.getText();
 

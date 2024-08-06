@@ -89,7 +89,7 @@ public class ApiLanStatus {
         private Response handlePlayerList() {
             playerIDs.clear();
             for (EntityPlayerMP player : playerList) {
-                playerIDs.add(player.getDisplayName());
+                playerIDs.add(player.getName());
             }
             Gson gson = new Gson();
             String jsonResponse = gson.toJson(playerIDs);
