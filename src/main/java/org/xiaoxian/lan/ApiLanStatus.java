@@ -15,17 +15,18 @@ import static org.xiaoxian.lan.ShareToLan.playerList;
 
 public class ApiLanStatus {
 
-    public static SimpleHttpServer HttpServer;
-    public static List<String> playerIDs = new ArrayList<>();
-
+    private static SimpleHttpServer HttpServer;
     private static final Map<String, String> data = new HashMap<>();
 
+    public static List<String> playerIDs = new ArrayList<>();
+
     public synchronized int start() throws IOException {
+        int port = 28960;
         if (HttpServer != null) {
-            throw new IllegalStateException("[EasyLAN] HttpServer already started");
+            System.out.println("[EasyLAN] HttpServer already started");
+            return port;
         }
 
-        int port = 28960;
         while (isPortInUse(port)) {
             port++;
         }
@@ -38,7 +39,8 @@ public class ApiLanStatus {
 
     public synchronized void stop() {
         if (HttpServer == null) {
-            throw new IllegalStateException("[EasyLAN] Server not running");
+            System.out.println("[EasyLAN] Server not running");
+            return;
         }
 
         HttpServer.stop();

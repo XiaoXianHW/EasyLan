@@ -43,13 +43,11 @@ processResources {
 
 jar {
     from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.compile.findAll { it.name.contains('nanohttpd') }.collect { it.isDirectory() ? it : zipTree(it) }
     }
-    manifest {
-        attributes(
-                'Implementation-Title': 'EasyLAN',
-                'Implementation-Version': version,
-                'Main-Class': 'org.xiaoxian.EasyLan'
-        )
+    eachFile { file ->
+        if (file.name == 'LICENSE.txt') {
+            file.exclude()
+        }
     }
 }
