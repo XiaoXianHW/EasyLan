@@ -24,18 +24,15 @@ public class GuiShareToLanEdit {
 
     @SubscribeEvent
     public void onGuiOpenEvent(GuiOpenEvent event) {
-        GuiScreen guiScreen = event.gui;
-        if (guiScreen instanceof GuiShareToLan) {
-            event.gui = new GuiShareToLanEdit.GuiShareToLanModified(guiScreen);
+        if (event.gui instanceof GuiShareToLan) {
+            event.gui = new GuiShareToLanModified(new GuiIngameMenu());
         }
     }
 
     public static class GuiShareToLanModified extends GuiShareToLan {
 
-        GuiScreen parentScreen;
         public GuiShareToLanModified(GuiScreen parentScreen) {
             super(parentScreen);
-            this.parentScreen = parentScreen;
         }
 
         @Override
@@ -54,7 +51,6 @@ public class GuiShareToLanEdit {
             if (button101 != null) {
                 button101.enabled = checkPortAndEnableButton(PortTextBox.getText()) && checkMaxPlayerAndEnableButton(MaxPlayerBox.getText());
             }
-
         }
 
         @Override
@@ -75,9 +71,6 @@ public class GuiShareToLanEdit {
         @Override
         protected void actionPerformed(GuiButton button) {
             super.actionPerformed(button);
-            if (button.id == 102) {
-                mc.displayGuiScreen(parentScreen);
-            }
             if (button.id == 101) {
                 ConfigUtil.set("Port", PortText);
                 ConfigUtil.set("MaxPlayer", MaxPlayerText);

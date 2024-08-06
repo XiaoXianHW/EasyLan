@@ -48,6 +48,5 @@ public class ServerStarting {
         minecraftServer.setCanSpawnNPCs(spawnNPCs);
         minecraftServer.setAllowFlight(allowFlight);
         minecraftServer.setMOTD(motd);
-
     }
 }

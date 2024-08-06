@@ -101,7 +101,7 @@ public class GuiEasyLanMain extends GuiScreen {
         } else if (button.id == 1) {
             ConfigUtil.load();
             MotdText = motd;
-            initGui();
+            updateGuiConfig();
         } else if (button.id == 2) {
             for (GuiButton CheckButton : buttonList) {
                 if (CheckButton instanceof CheckBoxButtonUtil) {
@@ -185,5 +185,54 @@ public class GuiEasyLanMain extends GuiScreen {
             }
         }
         super.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    private void updateGuiConfig() {
+        // 更新文本框状态
+        MotdTextBox.setText(MotdText);
+
+        // 更新复选框状态
+        for (GuiButton checkButton : buttonList) {
+            if (checkButton instanceof CheckBoxButtonUtil) {
+                CheckBoxButtonUtil checkBox = (CheckBoxButtonUtil) checkButton;
+                switch (checkBox.id) {
+                    case 10:
+                        checkBox.setChecked(allowPVP);
+                        break;
+                    case 11:
+                        checkBox.setChecked(onlineMode);
+                        break;
+                    case 12:
+                        checkBox.setChecked(spawnAnimals);
+                        break;
+                    case 13:
+                        checkBox.setChecked(spawnNPCs);
+                        break;
+                    case 14:
+                        checkBox.setChecked(allowFlight);
+                        break;
+                    case 20:
+                        checkBox.setChecked(whiteList);
+                        break;
+                    case 21:
+                        checkBox.setChecked(BanCommand);
+                        break;
+                    case 22:
+                        checkBox.setChecked(OpCommand);
+                        break;
+                    case 23:
+                        checkBox.setChecked(SaveCommand);
+                        break;
+                    case 30:
+                        checkBox.setChecked(HttpAPI);
+                        break;
+                    case 31:
+                        checkBox.setChecked(LanOutput);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
     }
 }

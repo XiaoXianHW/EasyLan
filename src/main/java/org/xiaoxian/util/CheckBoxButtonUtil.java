@@ -1,7 +1,6 @@
 package org.xiaoxian.util;
 
 import net.minecraft.client.Minecraft;
-
 import java.awt.*;
 
 public class CheckBoxButtonUtil extends ButtonUtil {
@@ -28,4 +27,7 @@ public class CheckBoxButtonUtil extends ButtonUtil {
         this.isChecked = !this.isChecked;
     }
 
+    public void setChecked(boolean isChecked) {
+        this.isChecked = isChecked;
+    }
 }

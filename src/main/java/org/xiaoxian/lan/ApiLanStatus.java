@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,26 +15,46 @@ import static org.xiaoxian.lan.ShareToLan.playerList;
 
 public class ApiLanStatus {
 
-    public static SimpleHttpServer server2;
+    private static SimpleHttpServer HttpServer;
     private static final Map<String, String> data = new HashMap<>();
+
     public static List<String> playerIDs = new ArrayList<>();
 
-    public synchronized void start() throws IOException {
-        if (server2 != null) {
-            throw new IllegalStateException("HttpServer already started");
+    public synchronized int start() throws IOException {
+        int port = 28960;
+        if (HttpServer != null) {
+            System.out.println("[EasyLAN] HttpServer already started");
+            return port;
         }
-        server2 = new SimpleHttpServer(28960);
-        server2.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
-        System.out.println("HttpAPI Server started on port 28960");
+
+        while (isPortInUse(port)) {
+            port++;
+        }
+
+        HttpServer = new SimpleHttpServer(port);
+        HttpServer.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
+        System.out.println("[EasyLAN] HttpAPI Server started on port " + port);
+        return port;
     }
 
     public synchronized void stop() {
-        if (server2 == null) {
-            throw new IllegalStateException("Server not running");
+        if (HttpServer == null) {
+            System.out.println("[EasyLAN] Server not running");
+            return;
         }
-        server2.stop();
-        server2 = null;
-        System.out.println("Server stopped");
+
+        HttpServer.stop();
+        HttpServer = null;
+
+        System.out.println("[EasyLAN] HttpApi Server stopped");
+    }
+
+    private boolean isPortInUse(int port) {
+        try (ServerSocket ignored = new ServerSocket(port)) {
+            return false;
+        } catch (IOException e) {
+            return true;
+        }
     }
 
     public void set(String key, String value) {
@@ -54,7 +75,7 @@ public class ApiLanStatus {
             } else if ("/playerlist".equals(uri)) {
                 return handlePlayerList();
             } else {
-                return newFixedLengthResponse(Response.Status.NOT_FOUND, "text/plain", "Not Found");
+                return newFixedLengthResponse(Response.Status.NOT_FOUND, "application/json", "Not Found");
             }
         }
 

@@ -32,10 +32,11 @@
 - SaveAll（**/save-all | /save-off | /save-on**）
 
 ### *Extensions*
- **Extensions have not been tested for compatibility, please try to disable them if you have problems with the game crashing.**
+**Extensions have not been tested for compatibility, please try to disable them if you have problems with the game crashing.**
 
 - HttpAPI Info（HTTPApi Support | port: 28960 | address: 127.0.0.1）<br>
-  ***(There are compatibility issues with HttpAPI, which may cause a crash when exiting the game. For details, please refer to https://github.com/XiaoXianHW/EasyLAN/issues/2)***
+  ~~(There are compatibility issues with HttpAPI, which may cause a crash when exiting the game. For details, please refer to https://github.com/XiaoXianHW/EasyLAN/issues/2)~~<br>
+ **Fixed in v1.5**
 - LAN output（Game Chat Output LAN Server Info）
 
 <br>

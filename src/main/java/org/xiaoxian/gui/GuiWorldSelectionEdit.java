@@ -13,13 +13,14 @@ public class GuiWorldSelectionEdit {
     @SubscribeEvent
     public void onGuiOpenEvent(GuiOpenEvent event) {
         if (event.gui instanceof GuiSelectWorld) {
-            event.gui = new GuiWorldSelectionModified(event.gui);
+            event.gui = new GuiWorldSelectionModified(new GuiMainMenu());
         }
     }
 
     public static class GuiWorldSelectionModified extends GuiSelectWorld {
 
         Minecraft mc = Minecraft.getMinecraft();
+
         public GuiWorldSelectionModified(GuiScreen parentScreen) {
             super(parentScreen);
         }

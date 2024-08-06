@@ -44,3 +44,14 @@ processResources
         exclude 'mcmod.info'
     }
 }
+
+jar {
+    from {
+        configurations.compile.findAll { it.name.contains('nanohttpd') }.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    eachFile { file ->
+        if (file.name == 'LICENSE.txt') {
+            file.exclude()
+        }
+    }
+}

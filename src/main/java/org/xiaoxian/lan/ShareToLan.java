@@ -1,7 +1,5 @@
 package org.xiaoxian.lan;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
@@ -15,14 +13,14 @@ import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import org.xiaoxian.gui.GuiShareToLanEdit;
 import org.xiaoxian.util.ChatUtil;
+import org.xiaoxian.util.NetworkUtil;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import java.net.*;
+import java.net.InetAddress;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,215 +30,186 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.xiaoxian.EasyLan.*;
-import static org.xiaoxian.lan.ApiLanStatus.server2;
 
 public class ShareToLan {
-    private final ApiLanStatus HttpApi = new ApiLanStatus();
+    ApiLanStatus HttpApi = new ApiLanStatus();
     public static List<EntityPlayerMP> playerList;
+    Integer HttpApiPort;
 
     @SubscribeEvent
     public void onGuiButtonClick(GuiScreenEvent.ActionPerformedEvent event) {
-        if (event.gui instanceof GuiShareToLanEdit.GuiShareToLanModified) {
+        if (event.gui instanceof GuiShareToLanEdit.GuiShareToLanModified && event.button.id == 101) {
             handleLanSetup(event);
-        } else if (event.gui instanceof GuiIngameMenu && event.button.id == 1 && HttpAPI) {
-            stopHttpApi();
+        }
+
+        /* 关闭HttpAPI线程 */
+        if (event.gui instanceof GuiIngameMenu && event.button.id == 1 && HttpAPI) {
+            HttpApi.stop();
         }
     }
 
     private void handleLanSetup(GuiScreenEvent.ActionPerformedEvent event) {
+        /* 变量区~ */
         String fieldName = devMode ? "maxPlayers" : "field_72405_c";
         Minecraft mc = Minecraft.getMinecraft();
         IntegratedServer server = mc.getIntegratedServer();
         NetworkSystem networkSystem = MinecraftServer.getServer().func_147137_ag();
 
-        configureLanPort(networkSystem);
-        configureMaxPlayers(fieldName);
+        /* 判断是否自定义端口号 */
+        if (!(GuiShareToLanEdit.PortTextBox.getText().isEmpty())) {
+            startLanPort(networkSystem, Integer.parseInt(GuiShareToLanEdit.PortTextBox.getText()));
+        }
 
+        /* 判断是否自定义最大玩家数 */
+        if (!(GuiShareToLanEdit.MaxPlayerBox.getText().isEmpty())) {
+            setMaxPlayer(fieldName);
+        }
+
+        /* 异步处理HttpAPI */
         if (HttpAPI) {
             startHttpApi(server);
         }
 
-        scheduleApiUpdates(server);
-
+        /* 因为输出包含原版端口号，而只能在开放后进行获取，创建一个异步线程附加等待处理 */
         if (LanOutput) {
-            displayLanInfo();
+            sendLanInfo(server);
         }
     }
 
-    private void configureLanPort(NetworkSystem networkSystem) {
-        String portText = GuiShareToLanEdit.PortTextBox.getText();
-        if (!portText.isEmpty()) {
-            try {
-                networkSystem.addLanEndpoint(InetAddress.getByName("0.0.0.0"), Integer.parseInt(portText));
-                if (!LanOutput) {
-                    ChatUtil.sendMsg("&e[&6EasyLan&e] &a" + I18n.format("easylan.chat.CtPort") + " &f[&e" + portText + "&f]");
-                }
-            } catch (IOException e) {
-                System.out.println("[EasyLan | networkSystem.addLanEndpoint] " + e.getMessage());
-            }
-        }
-    }
-
-    private void configureMaxPlayers(String fieldName) {
-        String maxPlayerText = GuiShareToLanEdit.MaxPlayerBox.getText();
-        if (!maxPlayerText.isEmpty()) {
-            try {
-                ServerConfigurationManager configManager = MinecraftServer.getServer().getConfigurationManager();
-                Field maxplayerField = ServerConfigurationManager.class.getDeclaredField(fieldName);
-                maxplayerField.setAccessible(true);
-                maxplayerField.set(configManager, Integer.parseInt(maxPlayerText));
-                if (!LanOutput) {
-                    ChatUtil.sendMsg("&e[&6EasyLan&e] &a" + I18n.format("easylan.chat.CtPlayer") + " &f[&e" + maxPlayerText + "&f]");
-                }
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                System.out.println("[EasyLan | ServerConfigurationManager.maxPlayers] " + e.getMessage());
-            }
-        }
-    }
-
-    private void startHttpApi(IntegratedServer server) {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.submit(() -> {
-            try {
-                Thread.sleep(1500);
-            } catch (InterruptedException e) {
-                System.out.println("[EasyLan | HttpApi] " + e.getMessage());
-            }
-            setupHttpApi(server);
-            try {
-                HttpApi.start();
-            } catch (IOException e) {
-                System.out.println("[EasyLan | HttpApi] " + e.getMessage());
-            }
-        });
-    }
-
-    private void setupHttpApi(IntegratedServer server) {
-        String portText = GuiShareToLanEdit.PortTextBox.getText();
-        HttpApi.set("port", portText.isEmpty() ? getLanPort() : portText);
-        HttpApi.set("version", server.getMinecraftVersion());
-        HttpApi.set("owner", server.getServerOwner());
-        HttpApi.set("motd", server.getMOTD());
-        HttpApi.set("pvp", String.valueOf(allowPVP));
-        HttpApi.set("onlineMode", String.valueOf(onlineMode));
-        HttpApi.set("spawnAnimals", String.valueOf(spawnAnimals));
-        HttpApi.set("spawnNPCs", String.valueOf(spawnNPCs));
-        HttpApi.set("allowFlight", String.valueOf(allowFlight));
-        HttpApi.set("difficulty", String.valueOf(server.func_147135_j().getDifficultyResourceKey()));
-        HttpApi.set("gameType", String.valueOf(server.getGameType()));
-        HttpApi.set("maxPlayer", String.valueOf(server.getMaxPlayers()));
-        HttpApi.set("onlinePlayer", String.valueOf(server.getCurrentPlayerCount()));
-        updatePlayerList();
-    }
-
-    private void scheduleApiUpdates(IntegratedServer server) {
-        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
-        executorService.scheduleAtFixedRate(() -> {
-            HttpApi.set("difficulty", String.valueOf(server.func_147135_j().getDifficultyResourceKey()));
-            HttpApi.set("onlinePlayer", String.valueOf(server.getCurrentPlayerCount()));
-            updatePlayerList();
-        }, 100, 100, TimeUnit.MILLISECONDS);
-    }
-
-    private void updatePlayerList() {
-        playerList = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList;
-        List<String> playerIDs = new ArrayList<>();
-        for (EntityPlayerMP player : playerList) {
-            playerIDs.add(player.getDisplayName());
-        }
-        ApiLanStatus.playerIDs = playerIDs;
-    }
-
-    private void displayLanInfo() {
+    private void sendLanInfo(IntegratedServer server) {
         ExecutorService executor2 = Executors.newSingleThreadExecutor();
         executor2.submit(() -> {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                System.out.println("[EasyLan | displayLanInfo] " + e.getMessage());
+                System.out.println("[EasyLAN] Thread Interrupted!" + e.getMessage());
             }
-            String publicIp = getPublicIp();
-            String localIp = getLocalIp();
+
             ChatUtil.sendMsg("&e[&6EasyLan&e] &aSuccessfully");
             ChatUtil.sendMsg("&4---------------------");
-            ChatUtil.sendMsg("&e" + I18n.format("easylan.local") + "IPv4: &a" + localIp);
-            ChatUtil.sendMsg("&e" + I18n.format("easylan.public") + "IPv4: &a" + publicIp);
-            ChatUtil.sendMsg("&e" + I18n.format("easylan.chat.isPublic") + ": &a" + ("Unknown".equals(publicIp) ? "Unknown" : "Yes"));
+            ChatUtil.sendMsg("&e" + I18n.format("easylan.local") + "IPv4: &a" + NetworkUtil.getLocalIpv4());
+            ChatUtil.sendMsg("&e" + I18n.format("easylan.local") + "IPv6: &a" + NetworkUtil.getLocalIpv6());
+            ChatUtil.sendMsg(" ");
+            ChatUtil.sendMsg("&e" + I18n.format("easylan.public") + "IPv4: &a" + NetworkUtil.getPublicIPv4());
+            ChatUtil.sendMsg("&e" + I18n.format("easylan.chat.isPublic") + ": &a" + NetworkUtil.checkIpIsPublic());
             ChatUtil.sendMsg(" ");
             ChatUtil.sendMsg("&e" + I18n.format("easylan.text.port") + ": &a" + getLanPort());
-            String portText = GuiShareToLanEdit.PortTextBox.getText();
-            if (!portText.isEmpty()) {
-                ChatUtil.sendMsg("&e" + I18n.format("easylan.text.CtPort") + ": &a" + portText);
+            if (!(GuiShareToLanEdit.PortTextBox.getText().isEmpty())) {
+                ChatUtil.sendMsg("&e" + I18n.format("easylan.text.CtPort") + ": &a" + GuiShareToLanEdit.PortTextBox.getText());
             }
             ChatUtil.sendMsg(" ");
-            ChatUtil.sendMsg("&e" + I18n.format("easylan.text.maxplayer") + ": &a" + MinecraftServer.getServer().getMaxPlayers());
+            ChatUtil.sendMsg("&e" + I18n.format("easylan.text.maxplayer") + ": &a" + server.getMaxPlayers());
             ChatUtil.sendMsg("&e" + I18n.format("easylan.text.onlineMode") + ": &a" + onlineMode);
             ChatUtil.sendMsg(" ");
             if (HttpAPI) {
                 ChatUtil.sendMsg("&eHttp-Api:&a true");
-                ChatUtil.sendMsg("&eApi-Status:&a localhost:28960/status");
-                ChatUtil.sendMsg("&eApi-PlayerList:&a localhost:28960/playerlist");
+                ChatUtil.sendMsg("&eApi-Status:&a localhost:" + HttpApiPort + "/status");
+                ChatUtil.sendMsg("&eApi-PlayerList:&a localhost:" + HttpApiPort + "/playerlist");
             }
             ChatUtil.sendMsg("&4---------------------");
         });
     }
 
-    private void stopHttpApi() {
+    private void startHttpApi(IntegratedServer server) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.submit(() -> {
-            if (server2 != null) {
-                HttpApi.stop();
-                System.out.println("HttpApi Stopped!");
+            System.out.println("[EasyLAN] Starting Thread!");
+
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException e) {
+                System.out.println("[EasyLAN] Thread Interrupted!" + e.getMessage());
+            }
+
+            if (GuiShareToLanEdit.PortTextBox.getText().isEmpty()) {
+                HttpApi.set("port", String.valueOf(getLanPort()));
+            } else {
+                HttpApi.set("port", GuiShareToLanEdit.PortTextBox.getText());
+            }
+
+            HttpApi.set("version", server.getMinecraftVersion());
+            HttpApi.set("owner", server.getServerOwner());
+            HttpApi.set("motd", server.getMOTD());
+            HttpApi.set("pvp", String.valueOf(allowPVP));
+            HttpApi.set("onlineMode", String.valueOf(onlineMode));
+            HttpApi.set("spawnAnimals", String.valueOf(spawnAnimals));
+            HttpApi.set("spawnNPCs", String.valueOf(spawnNPCs));
+            HttpApi.set("allowFlight", String.valueOf(allowFlight));
+            HttpApi.set("difficulty", String.valueOf(server.func_147135_j().getDifficultyResourceKey()));
+            HttpApi.set("gameType", String.valueOf(server.getGameType()));
+            HttpApi.set("maxPlayer", String.valueOf(server.getMaxPlayers()));
+            HttpApi.set("onlinePlayer", String.valueOf(server.getCurrentPlayerCount()));
+
+            updateApiInfo(server);
+
+            try {
+                HttpApiPort = HttpApi.start();
+            } catch (IOException e) {
+                System.out.println("[EasyLAN] HttpApi Start Error!" + e.getMessage());
             }
         });
     }
 
-    private String getPublicIp() {
-        try {
-            URL url = new URL("https://easylan-api.xiaoxian.org/api/myipcheck");
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.connect();
+    /* 定时异步处理API */
+    private void updateApiInfo(IntegratedServer server) {
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
+        executorService.scheduleAtFixedRate(() -> {
+            HttpApi.set("difficulty", String.valueOf(server.func_147135_j().getDifficultyResourceKey()));
+            HttpApi.set("onlinePlayer", String.valueOf(server.getCurrentPlayerCount()));
 
-            if (connection.getResponseCode() == 200) {
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-                    Gson gson = new Gson();
-                    JsonObject jsonObject = gson.fromJson(reader.readLine(), JsonObject.class);
-                    return jsonObject.get("ip").getAsString();
-                }
+            playerList = (List<EntityPlayerMP>) FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().playerEntityList;
+            List<String> playerIDs = new ArrayList<>();
+            for (EntityPlayerMP player : playerList) {
+                playerIDs.add(player.getDisplayName());
             }
-        } catch (Exception e) {
-            System.out.println("[EasyLan | getPublicIp] " + e.getMessage());
-        }
-        return "Unknown";
+            ApiLanStatus.playerIDs = playerIDs;
+
+        }, 100, 100, TimeUnit.MILLISECONDS);
     }
 
-    private String getLocalIp() {
+    private void setMaxPlayer(String fieldName) {
         try {
-            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-            Pattern ipv4Pattern = Pattern.compile("^(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)$");
-
-            while (interfaces.hasMoreElements()) {
-                NetworkInterface networkInterface = interfaces.nextElement();
-                Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();
-
-                while (addresses.hasMoreElements()) {
-                    InetAddress address = addresses.nextElement();
-                    String hostAddress = address.getHostAddress();
-                    Matcher matcher = ipv4Pattern.matcher(hostAddress);
-
-                    if (matcher.matches() && !hostAddress.equals("127.0.0.1")) {
-                        return hostAddress;
-                    }
-                }
+            ServerConfigurationManager configManager = MinecraftServer.getServer().getConfigurationManager();
+            Class<?> minecraftServerPlayerClass = Class.forName("net.minecraft.server.management.ServerConfigurationManager");
+            Field maxplayerField = minecraftServerPlayerClass.getDeclaredField(fieldName);
+            maxplayerField.setAccessible(true);
+            maxplayerField.set(configManager, Integer.parseInt(GuiShareToLanEdit.MaxPlayerBox.getText()));
+            if (!LanOutput) {
+                ChatUtil.sendMsg("&e[&6EasyLan&e] &a" + I18n.format("easylan.chat.CtPlayer") + " &f[&e" + GuiShareToLanEdit.MaxPlayerBox.getText() + "&f]");
             }
-        } catch (SocketException e) {
-            System.out.println("[EasyLan | getLocalIp] " + e.getMessage());
+        } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
+            ChatUtil.sendMsg("&e[&6EasyLan&e] &c" + I18n.format("easylan.chat.CtPlayerError"));
+            System.out.println("[EasyLAN] setMaxPlayer Error: " + e.getMessage());
         }
-        return "Unknown";
     }
 
-    private String getLanPort() {
-        return String.valueOf(MinecraftServer.getServer().getPort());
+    private void startLanPort(NetworkSystem networkSystem, int port) {
+        try {
+            networkSystem.addLanEndpoint(InetAddress.getByName("0.0.0.0"), port);
+            if (!LanOutput) {
+                ChatUtil.sendMsg("&e[&6EasyLan&e] &a" + I18n.format("easylan.chat.CtPort") + " &f[&e" + GuiShareToLanEdit.PortTextBox.getText() + "&f]");
+            }
+        } catch (IOException e) {
+            ChatUtil.sendMsg("&e[&6EasyLan&e] &c" + I18n.format("easylan.chat.CtPortError"));
+            System.out.println("[EasyLan] addLanEndpoint Error: " + e.getMessage());
+        }
+    }
+
+    public static String getLanPort() {
+        String lastPort = null;
+        try (BufferedReader reader = new BufferedReader(new FileReader("logs/latest.log"))) {
+            String line;
+            Pattern pattern = Pattern.compile("Started on ([0-9]*)");
+            while ((line = reader.readLine()) != null) {
+                Matcher matcher = pattern.matcher(line);
+                if (matcher.find()) {
+                    lastPort = matcher.group(1);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("[EasyLan] getLanPort Error: " + e.getMessage());
+            return null;
+        }
+        return lastPort;
     }
 }
