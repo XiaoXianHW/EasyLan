@@ -39,7 +39,7 @@ public class ShareToLan {
     @SubscribeEvent
     public void onGuiButtonClick(GuiScreenEvent.ActionPerformedEvent event) {
         if (event.gui instanceof GuiShareToLanEdit.GuiShareToLanModified && event.button.id == 101) {
-            handleLanSetup(event);
+            handleLanSetup();
         }
 
         /* 关闭HttpAPI线程 */
@@ -48,7 +48,7 @@ public class ShareToLan {
         }
     }
 
-    private void handleLanSetup(GuiScreenEvent.ActionPerformedEvent event) {
+    private void handleLanSetup() {
         /* 变量区~ */
         String fieldName = devMode ? "maxPlayers" : "field_72405_c";
         Minecraft mc = Minecraft.getMinecraft();
