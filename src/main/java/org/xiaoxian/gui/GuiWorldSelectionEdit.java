@@ -14,9 +14,8 @@ import java.io.IOException;
 public class GuiWorldSelectionEdit {
     @SubscribeEvent
     public void onGuiOpenEvent(GuiOpenEvent event) {
-        GuiScreen guiScreen = event.gui;
-        if (guiScreen instanceof GuiSelectWorld) {
-            event.gui = new GuiWorldSelectionModified(guiScreen);
+        if (event.gui instanceof GuiSelectWorld) {
+            event.gui = new GuiWorldSelectionModified(new GuiMainMenu());
         }
     }
 
@@ -24,21 +23,22 @@ public class GuiWorldSelectionEdit {
 
         Minecraft mc = Minecraft.getMinecraft();
         public GuiWorldSelectionModified(GuiScreen parentScreen) {
-            super(new GuiMainMenu());
+            super(parentScreen);
         }
 
         @Override
         public void initGui() {
-            buttonList.add(new GuiButton(89, 5, 5, 100, 20, I18n.format("easylan.setting")));
             super.initGui();
+            buttonList.add(new GuiButton(89, 5, 5, 100, 20, I18n.format("easylan.setting")));
         }
 
         @Override
         protected void actionPerformed(GuiButton button) throws IOException {
             if (button.id == 89) {
                 mc.displayGuiScreen(new GuiEasyLanMain(this));
+            } else {
+                super.actionPerformed(button);
             }
-            super.actionPerformed(button);
         }
     }
 }

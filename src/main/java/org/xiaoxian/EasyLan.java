@@ -22,7 +22,7 @@ public class EasyLan {
 
     public static final String MOD_ID = "easylan";
     public static final String MOD_NAME = "EasyLAN";
-    public static final String VERSION = "v1.2";
+    public static final String VERSION = "v1.5";
 
     @Mod.Instance(MOD_ID)
     public static EasyLan INSTANCE;
