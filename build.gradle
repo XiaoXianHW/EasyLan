@@ -1,19 +1,20 @@
 buildscript {
     repositories {
-        jcenter()
         maven {
             name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            url = "https://files.minecraftforge.net/maven"
         }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'org.nanohttpd:nanohttpd:2.3.1'
     }
 }
+
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.2"
-group= "org.xiaoxian.easylan" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+version = "1.5"
+group= "org.xiaoxian.easylan"
 archivesBaseName = "EasyLAN"
 
 sourceCompatibility = 1.8
@@ -28,7 +29,7 @@ minecraft {
 }
 
 dependencies {
-
+    compile('org.nanohttpd:nanohttpd:2.3.1')
 }
 
 processResources
@@ -40,8 +41,15 @@ processResources
         include 'mcmod.info'
         expand 'version':project.version, 'mcversion':project.minecraft.version
     }
-        
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
+}
+
+jar {
+    from {
+        configurations.compile.findAll { it.name.contains('nanohttpd') }.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    eachFile { file ->
+        if (file.name == 'LICENSE.txt') {
+            file.exclude()
+        }
     }
 }
