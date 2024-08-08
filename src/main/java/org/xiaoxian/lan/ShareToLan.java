@@ -37,20 +37,22 @@ public class ShareToLan {
 
     ApiLanStatus HttpApi = new ApiLanStatus();
     Integer HttpApiPort;
+    boolean isShared = false;
 
     @SubscribeEvent
     public void onGuiButtonClick(GuiScreenEvent.ActionPerformedEvent event) {
         if (event.getGui() instanceof GuiShareToLanEdit.GuiShareToLanModified && event.getButton().id == 101) {
             executorService = Executors.newFixedThreadPool(3);
-            updateService = Executors.newSingleThreadScheduledExecutor();
             handleLanSetup();
         }
 
         /* 关闭HttpAPI线程 */
-        if (event.getGui() instanceof GuiIngameMenu && event.getButton().id == 1 && HttpAPI) {
+        if (event.getGui() instanceof GuiIngameMenu && event.getButton().id == 1 && isShared) {
             executorService.shutdownNow();
-            updateService.shutdownNow();
-            HttpApi.stop();
+            if (HttpAPI) {
+                updateService.shutdownNow();
+                HttpApi.stop();
+            }
         }
     }
 
@@ -73,6 +75,7 @@ public class ShareToLan {
 
         /* 处理HttpAPI */
         if (HttpAPI) {
+            updateService = Executors.newSingleThreadScheduledExecutor();
             startHttpApi(server);
         }
 
@@ -80,9 +83,11 @@ public class ShareToLan {
         if (LanOutput) {
             sendLanInfo(server);
         }
+
+        isShared = true;
     }
 
-private void sendLanInfo(IntegratedServer server) {
+    private void sendLanInfo(IntegratedServer server) {
         executorService.submit(() -> {
             String lanIPv4 = NetworkUtil.getLocalIpv4();
             String lanIPv6 = NetworkUtil.getLocalIpv6();
@@ -99,14 +104,17 @@ private void sendLanInfo(IntegratedServer server) {
             ChatUtil.sendMsg("&e" + I18n.format("easylan.chat.isPublic") + ": &a" + checkIPv4);
             ChatUtil.sendMsg(" ");
             ChatUtil.sendMsg("&e" + I18n.format("easylan.text.port") + ": &a" + lanPort);
+
             if (!(GuiShareToLanEdit.PortTextBox.getText().isEmpty())) {
                 ChatUtil.sendMsg("&e" + I18n.format("easylan.text.CtPort") + ": &a" + GuiShareToLanEdit.PortTextBox.getText());
             }
+
             ChatUtil.sendMsg(" ");
             ChatUtil.sendMsg("&e" + I18n.format("easylan.text.maxplayer") + ": &a" + server.getMaxPlayers());
             ChatUtil.sendMsg("&e" + I18n.format("easylan.text.onlineMode") + ": &a" + onlineMode);
-            ChatUtil.sendMsg(" ");
+
             if (HttpAPI) {
+                ChatUtil.sendMsg(" ");
                 ChatUtil.sendMsg("&eHttp-Api:&a true");
                 ChatUtil.sendMsg("&eApi-Status:&a localhost:" + HttpApiPort + "/status");
                 ChatUtil.sendMsg("&eApi-PlayerList:&a localhost:" + HttpApiPort + "/playerlist");
