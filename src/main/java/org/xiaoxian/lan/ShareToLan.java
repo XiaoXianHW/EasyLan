@@ -31,18 +31,25 @@ import java.util.regex.Pattern;
 import static org.xiaoxian.EasyLan.*;
 
 public class ShareToLan {
-    ApiLanStatus HttpApi = new ApiLanStatus();
     public static List<EntityPlayerMP> playerList;
+    public static ExecutorService executorService;
+    public static ScheduledExecutorService updateService;
+
+    ApiLanStatus HttpApi = new ApiLanStatus();
     Integer HttpApiPort;
 
     @SubscribeEvent
     public void onGuiButtonClick(GuiScreenEvent.ActionPerformedEvent event) {
         if (event.getGui() instanceof GuiShareToLanEdit.GuiShareToLanModified && event.getButton().id == 101) {
+            executorService = Executors.newFixedThreadPool(3);
+            updateService = Executors.newSingleThreadScheduledExecutor();
             handleLanSetup();
         }
 
         /* 关闭HttpAPI线程 */
         if (event.getGui() instanceof GuiIngameMenu && event.getButton().id == 1 && HttpAPI) {
+            executorService.shutdownNow();
+            updateService.shutdownNow();
             HttpApi.stop();
         }
     }
@@ -64,7 +71,7 @@ public class ShareToLan {
             setMaxPlayer(fieldName);
         }
 
-        /* 异步处理HttpAPI */
+        /* 处理HttpAPI */
         if (HttpAPI) {
             startHttpApi(server);
         }
@@ -75,24 +82,23 @@ public class ShareToLan {
         }
     }
 
-    private void sendLanInfo(IntegratedServer server) {
-        ExecutorService executor2 = Executors.newSingleThreadExecutor();
-        executor2.submit(() -> {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                System.out.println("[EasyLAN] Thread Interrupted!" + e.getMessage());
-            }
+private void sendLanInfo(IntegratedServer server) {
+        executorService.submit(() -> {
+            String lanIPv4 = NetworkUtil.getLocalIpv4();
+            String lanIPv6 = NetworkUtil.getLocalIpv6();
+            String publicIPv4 = NetworkUtil.getPublicIPv4();
+            boolean checkIPv4 = NetworkUtil.checkIpIsPublic();
+            String lanPort = getLanPort();
 
             ChatUtil.sendMsg("&e[&6EasyLan&e] &aSuccessfully");
             ChatUtil.sendMsg("&4---------------------");
-            ChatUtil.sendMsg("&e" + I18n.format("easylan.local") + "IPv4: &a" + NetworkUtil.getLocalIpv4());
-            ChatUtil.sendMsg("&e" + I18n.format("easylan.local") + "IPv6: &a" + NetworkUtil.getLocalIpv6());
+            ChatUtil.sendMsg("&e" + I18n.format("easylan.local") + "IPv4: &a" + lanIPv4);
+            ChatUtil.sendMsg("&e" + I18n.format("easylan.local") + "IPv6: &a" + lanIPv6);
             ChatUtil.sendMsg(" ");
-            ChatUtil.sendMsg("&e" + I18n.format("easylan.public") + "IPv4: &a" + NetworkUtil.getPublicIPv4());
-            ChatUtil.sendMsg("&e" + I18n.format("easylan.chat.isPublic") + ": &a" + NetworkUtil.checkIpIsPublic());
+            ChatUtil.sendMsg("&e" + I18n.format("easylan.public") + "IPv4: &a" + publicIPv4);
+            ChatUtil.sendMsg("&e" + I18n.format("easylan.chat.isPublic") + ": &a" + checkIPv4);
             ChatUtil.sendMsg(" ");
-            ChatUtil.sendMsg("&e" + I18n.format("easylan.text.port") + ": &a" + getLanPort());
+            ChatUtil.sendMsg("&e" + I18n.format("easylan.text.port") + ": &a" + lanPort);
             if (!(GuiShareToLanEdit.PortTextBox.getText().isEmpty())) {
                 ChatUtil.sendMsg("&e" + I18n.format("easylan.text.CtPort") + ": &a" + GuiShareToLanEdit.PortTextBox.getText());
             }
@@ -110,16 +116,22 @@ public class ShareToLan {
     }
 
     private void startHttpApi(IntegratedServer server) {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.submit(() -> {
+        executorService.submit(() -> {
             System.out.println("[EasyLAN] Starting Thread!");
 
-            try {
-                Thread.sleep(1500);
-            } catch (InterruptedException e) {
-                System.out.println("[EasyLAN] Thread Interrupted!" + e.getMessage());
-            }
+            updateApiInfo(server);
 
+            try {
+                HttpApiPort = HttpApi.start();
+            } catch (IOException e) {
+                System.out.println("[EasyLAN] HttpApi Start Error!" + e.getMessage());
+            }
+        });
+    }
+
+    /* 定时异步处理API */
+    private void updateApiInfo(IntegratedServer server) {
+        updateService.scheduleAtFixedRate(() -> {
             if (GuiShareToLanEdit.PortTextBox.getText().isEmpty()) {
                 HttpApi.set("port", String.valueOf(getLanPort()));
             } else {
@@ -137,23 +149,6 @@ public class ShareToLan {
             HttpApi.set("difficulty", String.valueOf(server.getDifficulty()));
             HttpApi.set("gameType", String.valueOf(server.getGameType()));
             HttpApi.set("maxPlayer", String.valueOf(server.getMaxPlayers()));
-            HttpApi.set("onlinePlayer", String.valueOf(server.getCurrentPlayerCount()));
-
-            updateApiInfo(server);
-
-            try {
-                HttpApiPort = HttpApi.start();
-            } catch (IOException e) {
-                System.out.println("[EasyLAN] HttpApi Start Error!" + e.getMessage());
-            }
-        });
-    }
-
-    /* 定时异步处理API */
-    private void updateApiInfo(IntegratedServer server) {
-        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
-        executorService.scheduleAtFixedRate(() -> {
-            HttpApi.set("difficulty", String.valueOf(server.getDifficulty()));
             HttpApi.set("onlinePlayer", String.valueOf(server.getCurrentPlayerCount()));
 
             playerList = server.getPlayerList().getPlayerList();
