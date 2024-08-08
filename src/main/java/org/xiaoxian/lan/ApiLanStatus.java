@@ -87,10 +87,12 @@ public class ApiLanStatus {
         }
 
         private Response handlePlayerList() {
-            playerIDs.clear();
-            for (EntityPlayerMP player : playerList) {
-                playerIDs.add(player.getName());
-            }
+            ShareToLan.executorService.submit(() -> {
+                playerIDs.clear();
+                for (EntityPlayerMP player : playerList) {
+                    playerIDs.add(player.getName());
+                }
+            });
             Gson gson = new Gson();
             String jsonResponse = gson.toJson(playerIDs);
             return newFixedLengthResponse(Response.Status.OK, "application/json", jsonResponse);
