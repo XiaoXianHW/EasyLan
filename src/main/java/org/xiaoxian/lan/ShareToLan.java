@@ -116,8 +116,8 @@ public class ShareToLan {
             if (HttpAPI) {
                 ChatUtil.sendMsg(" ");
                 ChatUtil.sendMsg("&eHttp-Api:&a true");
-                ChatUtil.sendMsg("&eApi-Status:&a localhost:" + HttpApiPort + "/status");
-                ChatUtil.sendMsg("&eApi-PlayerList:&a localhost:" + HttpApiPort + "/playerlist");
+                ChatUtil.sendMsg("&eStatus:&a localhost:" + HttpApiPort + "/status");
+                ChatUtil.sendMsg("&ePlayerList:&a localhost:" + HttpApiPort + "/playerlist");
             }
             ChatUtil.sendMsg("&4---------------------");
         });
@@ -166,7 +166,7 @@ public class ShareToLan {
             }
             ApiLanStatus.playerIDs = playerIDs;
 
-        }, 100, 100, TimeUnit.MILLISECONDS);
+        }, 100, 500, TimeUnit.MILLISECONDS);
     }
 
     private void setMaxPlayer(String fieldName) {
