@@ -1,8 +1,8 @@
 package org.xiaoxian.lan;
 
-import com.google.gson.Gson;
 import fi.iki.elonen.NanoHTTPD;
 import net.minecraft.entity.player.EntityPlayerMP;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -81,8 +81,7 @@ public class ApiLanStatus {
 
         private Response handleStatus() {
             Map<String, String> responseMap = new HashMap<>(data);
-            Gson gson = new Gson();
-            String jsonResponse = gson.toJson(responseMap);
+            String jsonResponse = new Gson().toJson(responseMap);
             return newFixedLengthResponse(Response.Status.OK, "application/json", jsonResponse);
         }
 
@@ -93,8 +92,7 @@ public class ApiLanStatus {
                     playerIDs.add(player.getName());
                 }
             });
-            Gson gson = new Gson();
-            String jsonResponse = gson.toJson(playerIDs);
+            String jsonResponse = new Gson().toJson(playerIDs);
             return newFixedLengthResponse(Response.Status.OK, "application/json", jsonResponse);
         }
     }
