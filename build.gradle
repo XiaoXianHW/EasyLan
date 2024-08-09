@@ -11,7 +11,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 version = "1.5"
 group= "org.xiaoxian.easylan"
-archivesBaseName = "EasyLan"
+archivesBaseName = "EasyLAN"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
