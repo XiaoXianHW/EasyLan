@@ -64,11 +64,11 @@ public class NetworkUtil {
     }
 
     public static String getLocalIpv4() {
-        return Objects.requireNonNull(getLocalAddress(false)).getHostAddress();
+        return getLocalAddress(false) != null ? getLocalAddress(false).getHostAddress() : "Unknown";
     }
 
     public static String getLocalIpv6() {
-        return Objects.requireNonNull(getLocalAddress(true)).getHostAddress();
+        return getLocalAddress(true) != null ? getLocalAddress(true).getHostAddress() : "Unknown";
     }
 
     public static InetAddress getLocalAddress(boolean preferIPv6) {
@@ -98,28 +98,22 @@ public class NetworkUtil {
             System.out.println("[EasyLAN] Error getting local IP address: " + e.getMessage());
         }
 
-        InetAddress preferredIPv4Address = null;
-        InetAddress firstIPv6Address = null;
+        InetAddress IPv4Address = null;
+        InetAddress IPv6Address = null;
 
         for (InetAddress address : addresses) {
             if (address instanceof Inet4Address) {
-                if (preferredIPv4Address == null && isPrivateIPv4Address(address)) {
-                    preferredIPv4Address = address;
+                if (IPv4Address == null && isPrivateIPv4Address(address)) {
+                    IPv4Address = address;
                 }
             } else if (address instanceof Inet6Address) {
-                if (firstIPv6Address == null && isValidIPv6Address(address)) {
-                    firstIPv6Address = address;
+                if (IPv6Address == null && isValidIPv6Address(address)) {
+                    IPv6Address = address;
                 }
             }
         }
 
-        if (preferIPv6 && firstIPv6Address != null) {
-            return firstIPv6Address;
-        } else if (preferredIPv4Address != null) {
-            return preferredIPv4Address;
-        } else {
-            return !addresses.isEmpty() ? addresses.get(0) : null;
-        }
+        return preferIPv6 ? IPv6Address : IPv4Address;
     }
 
     private static boolean isVirtualInterface(String displayName, Set<String> virtualNetworkInterfaces) {
@@ -144,7 +138,6 @@ public class NetworkUtil {
     private static boolean isValidIPv6Address(InetAddress address) {
         if (address instanceof Inet6Address) {
             String ip = address.getHostAddress();
-            // 过滤掉包含%字符的IPv6地址
             return !ip.contains("%") && !ip.matches(".*:0:0:0:0:0:.*") && !ip.matches(".*::.*");
         }
         return false;
