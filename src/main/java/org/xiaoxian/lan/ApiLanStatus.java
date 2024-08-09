@@ -81,18 +81,18 @@ public class ApiLanStatus {
 
         private Response handleStatus() {
             Map<String, String> responseMap = new HashMap<>(data);
-            Gson gson = new Gson();
-            String jsonResponse = gson.toJson(responseMap);
+            String jsonResponse = new Gson().toJson(responseMap);
             return newFixedLengthResponse(Response.Status.OK, "application/json", jsonResponse);
         }
 
         private Response handlePlayerList() {
-            playerIDs.clear();
-            for (EntityPlayerMP player : playerList) {
-                playerIDs.add(player.getName());
-            }
-            Gson gson = new Gson();
-            String jsonResponse = gson.toJson(playerIDs);
+            ShareToLan.executorService.submit(() -> {
+                playerIDs.clear();
+                for (EntityPlayerMP player : playerList) {
+                    playerIDs.add(player.getName());
+                }
+            });
+            String jsonResponse = new Gson().toJson(playerIDs);
             return newFixedLengthResponse(Response.Status.OK, "application/json", jsonResponse);
         }
     }
