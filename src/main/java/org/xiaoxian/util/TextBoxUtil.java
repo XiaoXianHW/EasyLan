@@ -23,7 +23,7 @@ public class TextBoxUtil extends GuiTextField {
             lineScrollOffsetField = GuiTextField.class.getDeclaredField(fieldName);
             lineScrollOffsetField.setAccessible(true);
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            System.out.println("[EasyLan | TextBoxUtil] Error: " + e.getMessage());
         }
     }
 
@@ -40,7 +40,7 @@ public class TextBoxUtil extends GuiTextField {
             try {
                 lineScrollOffset = (int) lineScrollOffsetField.get(this);
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                System.out.println("[EasyLan | drawTextBox] Error: " + e.getMessage());
             }
             String textToDraw = getText().substring(Math.max(0, lineScrollOffset));
 

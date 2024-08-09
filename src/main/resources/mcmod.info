@@ -1,16 +1,16 @@
 [
-{
-  "modid": "easylan",
-  "name": "EasyLAN",
-  "description": "",
-  "version": "v1.2",
-  "mcversion": "1.12.2",
-  "url": "https://github.com/XiaoXianHW/EasyLAN",
-  "updateUrl": "",
-  "authorList": ["XiaoXian"],
-  "credits": "",
-  "logoFile": "",
-  "screenshots": [],
-  "dependencies": []
-}
+  {
+    "modid": "easylan",
+    "name": "EasyLAN",
+    "description": "Custom LAN Servers",
+    "version": "${version}",
+    "mcversion": "1.12.2",
+    "url": "https://github.com/XiaoXianHW/EasyLAN",
+    "updateUrl": "",
+    "authorList": ["XiaoXian"],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
 ]

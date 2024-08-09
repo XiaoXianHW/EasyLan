@@ -24,9 +24,8 @@ public class GuiShareToLanEdit {
 
     @SubscribeEvent
     public void onGuiOpenEvent(GuiOpenEvent event) {
-        GuiScreen guiScreen = event.getGui();
-        if (guiScreen instanceof GuiShareToLan) {
-            event.setGui(new GuiShareToLanEdit.GuiShareToLanModified(event.getGui()));
+        if (event.getGui() instanceof GuiShareToLan) {
+            event.setGui(new GuiShareToLanEdit.GuiShareToLanModified(new GuiIngameMenu()));
         }
     }
 
@@ -72,9 +71,6 @@ public class GuiShareToLanEdit {
         @Override
         protected void actionPerformed(@Nonnull GuiButton button) throws IOException{
             super.actionPerformed(button);
-            if (button.id == 102) {
-                mc.displayGuiScreen(new GuiIngameMenu());
-            }
             if (button.id == 101) {
                 ConfigUtil.set("Port", PortText);
                 ConfigUtil.set("MaxPlayer", MaxPlayerText);
