@@ -28,6 +28,8 @@
   "easylan.text.maxplayer": "Max Player",
   "easylan.text.maxplayer.invalid": "Invalid MaxPlayer value! (2-500000)",
   "easylan.chat.CtPort": "Successfully opened custom port",
+  "easylan.chat.CtPortError": "Open Custom Port Error",
   "easylan.chat.CtPlayer": "Successfully set max players",
+  "easylan.chat.CtPlayerError": "Set MaxPlayer Error",
   "easylan.chat.isPublic": "isPublic"
 }
