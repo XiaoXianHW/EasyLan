@@ -1,6 +1,8 @@
 package org.xiaoxian.util;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 import static org.xiaoxian.EasyLAN.*;
@@ -12,7 +14,7 @@ public class ConfigUtil {
     public static void load() {
         File file = new File(CONFIG_FILE);
         if (file.exists()) {
-            try (InputStream input = new FileInputStream(file)) {
+            try (InputStream input = Files.newInputStream(file.toPath())) {
                 properties.load(input);
                 allowPVP = Boolean.parseBoolean(ConfigUtil.get("pvp"));
                 onlineMode = Boolean.parseBoolean(ConfigUtil.get("online-mode"));
@@ -28,7 +30,7 @@ public class ConfigUtil {
                 CustomPort = ConfigUtil.get("Port");
                 CustomMaxPlayer = ConfigUtil.get("MaxPlayer");
             } catch (IOException ex) {
-                ex.printStackTrace();
+                System.out.println("[EasyLAN] Error loading config file: " + ex.getMessage());
             }
         } else {
             setDefaultProperties();
@@ -37,10 +39,10 @@ public class ConfigUtil {
     }
 
     public static void save() {
-        try (OutputStream output = new FileOutputStream(CONFIG_FILE)) {
+        try (OutputStream output = Files.newOutputStream(Paths.get(CONFIG_FILE))) {
             properties.store(output, "EasyLAN configuration");
         } catch (IOException ex) {
-            ex.printStackTrace();
+            System.out.println("[EasyLAN] Error saving config file: " + ex.getMessage());
         }
     }
 
