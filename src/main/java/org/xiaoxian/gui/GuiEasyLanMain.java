@@ -40,7 +40,7 @@ public class GuiEasyLanMain extends Screen {
             public void onClick(double mouseX, double mouseY) {
                 ConfigUtil.load();
                 MotdText = motd;
-                init();
+                minecraft.displayGuiScreen(new GuiEasyLanMain(parentScreen));
             }
         });
         addButton(new ButtonUtil(this.width / 2 - 170, this.height - 25, 100, 20, I18n.format("easylan.save")) {
