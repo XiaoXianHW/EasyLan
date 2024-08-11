@@ -2,6 +2,7 @@ package org.xiaoxian.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.screen.IngameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ShareToLanScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -29,9 +30,8 @@ public class GuiShareToLanEdit {
 
     @SubscribeEvent
     public void onGuiOpenEvent(GuiOpenEvent event) {
-        Screen guiScreen = event.getGui();
-        if (guiScreen instanceof ShareToLanScreen) {
-            event.setGui(new GuiShareToLanEdit.GuiShareToLanModified(event.getGui()));
+        if (event.getGui() instanceof ShareToLanScreen) {
+            event.setGui(new GuiShareToLanModified(new IngameMenuScreen(true)));
         }
     }
 
@@ -84,7 +84,7 @@ public class GuiShareToLanEdit {
                 // 添加新按钮
                 Button finalOriginalButton = originalButton;
                 Button newButton = new Button(x, y, width, height, I18n.format("lanServer.start"), button -> {
-                    ShareToLan.NewShareToLAN();
+                    new ShareToLan().handleLanSetup();
                     finalOriginalButton.onPress();
                     ConfigUtil.set("Port", PortText);
                     ConfigUtil.set("MaxPlayer", MaxPlayerText);

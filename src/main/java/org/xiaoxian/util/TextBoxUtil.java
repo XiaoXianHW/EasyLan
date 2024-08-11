@@ -24,7 +24,7 @@ public class TextBoxUtil extends TextFieldWidget {
             lineScrollOffsetField = TextFieldWidget.class.getDeclaredField(fieldName);
             lineScrollOffsetField.setAccessible(true);
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            System.out.println("[EasyLAN | TextBoxUtil] Error: " + e.getMessage());
         }
     }
 
@@ -41,7 +41,7 @@ public class TextBoxUtil extends TextFieldWidget {
             try {
                 lineScrollOffset = (int) lineScrollOffsetField.get(this);
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                System.out.println("[EasyLAN | drawTextBox] Error: " + e.getMessage());
             }
             String textToDraw = getText().substring(Math.max(0, lineScrollOffset));
 
