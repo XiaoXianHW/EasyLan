@@ -201,7 +201,7 @@ public class ShareToLan {
                 }
             }
         } catch (IOException e) {
-            System.out.println("[EasyLan] getLanPort Error: " + e.getMessage());
+            System.out.println("[EasyLAN] getLanPort Error: " + e.getMessage());
             return null;
         }
         return lastPort;

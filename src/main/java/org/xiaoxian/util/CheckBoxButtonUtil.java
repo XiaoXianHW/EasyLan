@@ -25,8 +25,4 @@ public class CheckBoxButtonUtil extends ButtonUtil {
     public void toggleChecked() {
         this.isChecked = !this.isChecked;
     }
-
-    public void setChecked(boolean isChecked) {
-        this.isChecked = isChecked;
-    }
 }
