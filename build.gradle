@@ -5,19 +5,18 @@ buildscript {
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath('org.nanohttpd:nanohttpd:2.3.1')
     }
 }
+
 apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
 
-version = '1.2'
+version = '1.5'
 group = 'org.xiaoxian.easylan'
-archivesBaseName = 'EasyLAN'
+archivesBaseName = 'easylan'
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
-println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
     mappings channel: 'official', version: '1.17.1'
     runs {
@@ -33,72 +32,42 @@ minecraft {
                 }
             }
         }
-
-        server {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-
-            mods {
-                examplemod {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        data {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-
-            args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-
-            mods {
-                examplemod {
-                    source sourceSets.main
-                }
-            }
-        }
     }
-}
-
-sourceSets.main.resources { srcDir 'src/generated/resources' }
-
-repositories {
-
 }
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.17.1-37.1.1'
+    implementation 'org.nanohttpd:nanohttpd:2.3.1'
+}
+
+configurations {
+    customJarConfiguration {
+        canBeResolved = true
+        canBeConsumed = false
+        extendsFrom implementation
+    }
 }
 
 jar {
     manifest {
         attributes([
-                "Specification-Title"     : "examplemod",
-                "Specification-Vendor"    : "examplemodsareus",
-                "Specification-Version"   : "1", // We are version 1 of ourselves
-                "Implementation-Title"    : project.name,
-                "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : "examplemodsareus",
+                "Implementation-Title": project.name,
+                "Implementation-Version": "1.5",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
+    }
+    from {
+        configurations.customJarConfiguration.filter {
+            it.name.contains('nanohttpd')
+        }.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    eachFile { file ->
+        if (file.name == 'LICENSE.txt') {
+            file.exclude()
+        }
     }
 }
 
 jar.finalizedBy('reobfJar')
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact jar
-        }
-    }
-    repositories {
-        maven {
-            url "file://${project.projectDir}/mcmodsrepo"
-        }
-    }
-}

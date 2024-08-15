@@ -13,8 +13,7 @@ import org.xiaoxian.lan.ShareToLan;
 public class GuiExitGame {
     @SubscribeEvent
     public void onGuiOpenEvent(GuiOpenEvent event) {
-        Screen guiScreen = event.getGui();
-        if (guiScreen instanceof PauseScreen) {
+        if (event.getGui() instanceof PauseScreen) {
             event.setGui(new GuiInGameMenuModified());
         }
     }
@@ -53,7 +52,7 @@ public class GuiExitGame {
                 // 添加新按钮
                 Button finalOriginalButton = originalButton;
                 Button newButton = new Button(x, y, width, height, Component.nullToEmpty(I18n.get("menu.returnToMenu")), button -> {
-                    ShareToLan.StopHttpAPIServer();
+                    new ShareToLan().handleStop();
                     finalOriginalButton.onPress();
                 });
 
