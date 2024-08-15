@@ -6,6 +6,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.ShareToLanScreen;
 import net.minecraft.client.resources.language.I18n;
@@ -32,9 +33,8 @@ public class GuiShareToLanEdit {
 
     @SubscribeEvent
     public void onGuiOpenEvent(ScreenOpenEvent event) {
-        Screen guiScreen = event.getScreen();
-        if (guiScreen instanceof ShareToLanScreen) {
-            event.setScreen(new GuiShareToLanModified(event.getScreen()));
+        if (event.getScreen() instanceof ShareToLanScreen) {
+            event.setScreen(new GuiShareToLanModified(new PauseScreen(true)));
         }
     }
 
@@ -86,7 +86,7 @@ public class GuiShareToLanEdit {
                 // 添加新按钮
                 Button finalOriginalButton = originalButton;
                 Button newButton = new Button(x, y, width, height, Component.nullToEmpty(I18n.get("lanServer.start")), button -> {
-                    ShareToLan.NewShareToLAN();
+                    new ShareToLan().handleLanSetup();
                     finalOriginalButton.onPress();
                     ConfigUtil.set("Port", PortText);
                     ConfigUtil.set("MaxPlayer", MaxPlayerText);

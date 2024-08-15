@@ -12,25 +12,23 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public class GuiWorldSelectionEdit {
     @SubscribeEvent
     public void onGuiOpenEvent(ScreenOpenEvent event) {
-        Screen guiScreen = event.getScreen();
-        if (guiScreen instanceof SelectWorldScreen) {
-            event.setScreen(new GuiWorldSelectionModified(event.getScreen()));
+        if (event.getScreen() instanceof SelectWorldScreen) {
+            event.setScreen(new GuiWorldSelectionModified(new TitleScreen()));
         }
     }
 
     public static class GuiWorldSelectionModified extends SelectWorldScreen {
 
         public GuiWorldSelectionModified(Screen parentScreen) {
-            super(new TitleScreen());
+            super(parentScreen);
         }
 
         @Override
         protected void init() {
+            super.init();
             this.addRenderableWidget(new Button(5, 5, 100, 20, Component.nullToEmpty(I18n.get("easylan.setting")), (button) -> {
-                assert GuiWorldSelectionModified.this.minecraft != null;
                 GuiWorldSelectionModified.this.minecraft.setScreen(new GuiEasyLanMain(this));
             }));
-            super.init();
         }
     }
 }

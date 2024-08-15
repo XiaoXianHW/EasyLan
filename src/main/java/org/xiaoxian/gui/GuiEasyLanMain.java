@@ -42,7 +42,7 @@ public class GuiEasyLanMain extends Screen {
             public void onClick(double mouseX, double mouseY) {
                 ConfigUtil.load();
                 MotdText = motd;
-                init();
+                minecraft.setScreen(new GuiEasyLanMain(parentScreen));
             }
         });
         addRenderableWidget(new ButtonUtil(this.width / 2 - 170, this.height - 25, 100, 20, I18n.get("easylan.save")) {
