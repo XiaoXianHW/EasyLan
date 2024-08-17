@@ -1,6 +1,5 @@
 package org.xiaoxian.lan;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import net.minecraft.command.CommandHandler;
@@ -8,13 +7,14 @@ import net.minecraft.command.CommandServerKick;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.server.*;
 import net.minecraft.server.MinecraftServer;
-import static org.xiaoxian.EasyLan.*;
+
+import static org.xiaoxian.EasyLAN.*;
 
 public class ServerStarting {
 
     @Mod.EventHandler
     public void onServerStarting(FMLServerStartingEvent event) {
-        MinecraftServer minecraftServer = FMLCommonHandler.instance().getMinecraftServerInstance();
+        MinecraftServer minecraftServer = event.getServer();
         ICommandManager commandManager = minecraftServer.getCommandManager();
         if (commandManager instanceof CommandHandler) {
             if (whiteList) {

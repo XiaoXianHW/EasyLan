@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL11;
 import java.awt.*;
 import java.lang.reflect.Field;
 
-import static org.xiaoxian.EasyLan.devMode;
+import static org.xiaoxian.EasyLAN.devMode;
 
 public class TextBoxUtil extends GuiTextField {
 
