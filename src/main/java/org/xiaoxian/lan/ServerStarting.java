@@ -9,13 +9,13 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
-import static org.xiaoxian.EasyLan.*;
+import static org.xiaoxian.EasyLAN.*;
 
 public class ServerStarting {
 
     @Mod.EventHandler
     public void onServerStarting(FMLServerStartingEvent event) {
-        MinecraftServer minecraftServer = FMLCommonHandler.instance().getMinecraftServerInstance();
+        MinecraftServer minecraftServer = event.getServer();
         ICommandManager commandManager = minecraftServer.getCommandManager();
         if (commandManager instanceof CommandHandler) {
             if (whiteList) {
