@@ -11,21 +11,21 @@ import org.xiaoxian.lan.ShareToLan;
 import org.xiaoxian.util.ConfigUtil;
 
 @Mod(
-        modid = EasyLan.MOD_ID,
-        name = EasyLan.MOD_NAME,
-        version = EasyLan.VERSION,
+        modid = EasyLAN.MOD_ID,
+        name = EasyLAN.MOD_NAME,
+        version = EasyLAN.VERSION,
         acceptableRemoteVersions = "*",
         guiFactory = "org.xiaoxian.HookConfigFactory"
 )
 
-public class EasyLan {
+public class EasyLAN {
 
     public static final String MOD_ID = "easylan";
     public static final String MOD_NAME = "EasyLAN";
     public static final String VERSION = "v1.5";
 
     @Mod.Instance(MOD_ID)
-    public static EasyLan INSTANCE;
+    public static EasyLAN INSTANCE;
 
     // 如果处于IDEA等开发环境，请修改此值为true，否则可能无法正常运行
     // If you are in a development environment such as IDEA, please modify this boolean to true, otherwise it may not work properly
