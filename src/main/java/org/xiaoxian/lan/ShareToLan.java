@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.xiaoxian.EasyLan.*;
+import static org.xiaoxian.EasyLAN.*;
 
 public class ShareToLan {
     public static List<EntityPlayerMP> playerList;
@@ -37,7 +37,7 @@ public class ShareToLan {
 
     ApiLanStatus HttpApi = new ApiLanStatus();
     Integer HttpApiPort;
-    boolean isShared = false;
+    static boolean isShared = false;
 
     @SubscribeEvent
     public void onGuiButtonClick(GuiScreenEvent.ActionPerformedEvent event) {
