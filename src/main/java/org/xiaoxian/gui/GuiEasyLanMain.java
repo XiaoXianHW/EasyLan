@@ -7,7 +7,6 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import org.xiaoxian.util.ButtonUtil;
 import org.xiaoxian.util.CheckBoxButtonUtil;
 import org.xiaoxian.util.ConfigUtil;
@@ -25,7 +24,7 @@ public class GuiEasyLanMain extends Screen {
     private final Screen parentScreen;
 
     public GuiEasyLanMain(Screen parentScreen) {
-        super(new TranslatableComponent("easylan.setting"));
+        super(Component.translatable("easylan.setting"));
         this.parentScreen = parentScreen;
     }
 
