@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.xiaoxian.EasyLan.*;
+import static org.xiaoxian.EasyLAN.*;
 
 public class GuiEasyLanMain extends GuiScreen {
     private GuiTextField MotdTextBox;

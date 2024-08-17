@@ -5,7 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Properties;
 
-import static org.xiaoxian.EasyLan.*;
+import static org.xiaoxian.EasyLAN.*;
 
 public class ConfigUtil {
     private static final String CONFIG_FILE = "config/easylan.cfg";
