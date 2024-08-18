@@ -38,6 +38,7 @@ public class ShareToLan {
     ApiLanStatus HttpApi = new ApiLanStatus();
     Integer HttpApiPort;
     static boolean isShared = false;
+
     public void handleStop() {
         if (isShared) {
             executorService.shutdownNow();

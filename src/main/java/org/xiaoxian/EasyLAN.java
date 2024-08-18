@@ -13,9 +13,9 @@ public class EasyLAN {
 
     public static final String MOD_ID = "easylan";
 
-    // 如果处于IDEA等开发环境，请修改此值为true，否则可能无法正常运行
-    // If you are in a development environment such as IDEA, please modify this boolean to true, otherwise it may not work properly
-    public static boolean devMode = true;
+    // 如果您在开发环境中使用 runClient 进行测试，请修改此值为true
+    // If you are using runClient for testing in your development environment, change this value to true
+    public static boolean devMode = false;
 
     public static boolean allowPVP = true;
     public static boolean onlineMode = true;
