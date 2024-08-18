@@ -27,7 +27,7 @@ public class TextBoxUtil extends EditBox {
             lineScrollOffsetField = EditBox.class.getDeclaredField(fieldName);
             lineScrollOffsetField.setAccessible(true);
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            System.out.println("[EasyLAN | TextBoxUtil] Error: " + e.getMessage());
         }
     }
 
@@ -44,7 +44,7 @@ public class TextBoxUtil extends EditBox {
             try {
                 lineScrollOffset = (int) lineScrollOffsetField.get(this);
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                System.out.println("[EasyLAN | drawTextBox] Error: " + e.getMessage());
             }
             String textToDraw = getValue().substring(Math.max(0, lineScrollOffset));
 

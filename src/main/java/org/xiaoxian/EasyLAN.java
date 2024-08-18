@@ -2,12 +2,13 @@ package org.xiaoxian;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.xiaoxian.gui.GuiExitGame;
 import org.xiaoxian.gui.GuiShareToLanEdit;
 import org.xiaoxian.gui.GuiWorldSelectionEdit;
 import org.xiaoxian.lan.ServerStarting;
+import org.xiaoxian.lan.ServerStopping;
 import org.xiaoxian.util.ConfigUtil;
 
 @Mod(EasyLAN.MOD_ID)
@@ -39,7 +40,6 @@ public class EasyLAN {
         MinecraftForge.EVENT_BUS.register(new GuiWorldSelectionEdit());
         MinecraftForge.EVENT_BUS.register(new GuiShareToLanEdit());
         MinecraftForge.EVENT_BUS.register(new ServerStarting());
-        MinecraftForge.EVENT_BUS.register(new GuiExitGame());
 
         GuiShareToLanEdit.PortText = CustomPort;
         GuiShareToLanEdit.MaxPlayerText = CustomMaxPlayer;
@@ -49,5 +49,11 @@ public class EasyLAN {
     public void onServerStarting(ServerStartingEvent event) {
         MinecraftForge.EVENT_BUS.register(this);
         new ServerStarting().onServerStarting(event);
+    }
+
+    @SubscribeEvent
+    public void onServerStopping(ServerStoppingEvent event) {
+        MinecraftForge.EVENT_BUS.register(this);
+        new ServerStopping().onServerStopping(event);
     }
 }

@@ -8,7 +8,7 @@
   "easylan.public": "公開",
   "easylan.text.setting1": "基本限制",
   "easylan.text.setting2": "指令支援",
-  "easylan.text.setting3": "擴展設定",
+  "easylan.text.setting3": "擴展設定（測試）",
   "easylan.text.pvp": "允許PVP",
   "easylan.text.onlineMode": "正版驗證",
   "easylan.text.spawnAnimals": "生成動物",
@@ -28,6 +28,8 @@
   "easylan.text.maxplayer": "最大玩家數",
   "easylan.text.maxplayer.invalid": "請輸入正確的最大玩家數！（2-500000）",
   "easylan.chat.CtPort": "成功開啟自訂連接埠",
+  "easylan.chat.CtPortError": "開啟自訂連接埠失敗！",
   "easylan.chat.CtPlayer": "已設定最大玩家數",
+  "easylan.chat.CtPlayerError": "設定最大玩家數失敗！",
   "easylan.chat.isPublic": "是否為公網"
 }
