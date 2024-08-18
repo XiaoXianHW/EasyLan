@@ -28,7 +28,7 @@ public class ConfigUtil {
                 CustomPort = ConfigUtil.get("Port");
                 CustomMaxPlayer = ConfigUtil.get("MaxPlayer");
             } catch (IOException ex) {
-                ex.printStackTrace();
+                System.out.println("[EasyLAN] Error loading config file: " + ex.getMessage());
             }
         } else {
             setDefaultProperties();
@@ -40,7 +40,7 @@ public class ConfigUtil {
         try (OutputStream output = new FileOutputStream(CONFIG_FILE)) {
             properties.store(output, "EasyLAN configuration");
         } catch (IOException ex) {
-            ex.printStackTrace();
+            System.out.println("[EasyLAN] Error saving config file: " + ex.getMessage());
         }
     }
 
