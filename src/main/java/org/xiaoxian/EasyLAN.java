@@ -2,7 +2,6 @@ package org.xiaoxian;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.xiaoxian.gui.GuiShareToLanEdit;
 import org.xiaoxian.gui.GuiWorldSelectionEdit;
@@ -22,10 +21,13 @@ public class EasyLAN {
 
     public static final String MOD_ID = "easylan";
     public static final String MOD_NAME = "EasyLAN";
-    public static final String VERSION = "v1.5";
+    public static final String VERSION = "1.5";
 
     @Mod.Instance(MOD_ID)
     public static EasyLAN INSTANCE;
+
+    // 如果您在开发环境中使用 runClient 进行测试，请修改此值为true
+    // If you are using runClient for testing in your development environment, change this value to true
     public static boolean devMode = false;
 
     public static boolean allowPVP = true;
@@ -54,12 +56,6 @@ public class EasyLAN {
 
         GuiShareToLanEdit.PortText = CustomPort;
         GuiShareToLanEdit.MaxPlayerText = CustomMaxPlayer;
-    }
-
-    @Mod.EventHandler
-    public void onServerStarting(FMLServerStartingEvent event) {
-        MinecraftForge.EVENT_BUS.register(this);
-        new ServerStarting().onServerStarting(event);
     }
 }
 
