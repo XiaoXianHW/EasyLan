@@ -11,7 +11,7 @@ import java.util.*;
 public class NetworkUtil {
     public static String getPublicIPv4() {
         try {
-            URL url = new URL("https://easylan-api.xiaoxian.org/api/myip");
+            URL url = new URL("https://easylan.xiaoxian.org/api/myip");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.connect();
@@ -38,7 +38,7 @@ public class NetworkUtil {
 
     public static boolean checkIpIsPublic() {
         try {
-            URL url = new URL("https://easylan-api.xiaoxian.org/api/myipcheck");
+            URL url = new URL("https://easylan.xiaoxian.org/api/myipcheck");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.connect();
