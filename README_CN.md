@@ -78,5 +78,3 @@ Eclipse 开发
 ```
 ./gradlew genEclipseRuns
 ```
-
-**如果您在IDEA或Eclipse编译环境中使用`runClient`，需要将`EasyLAN.java`中的`DevMode`的值设置为`true`，否则无法正常运行**

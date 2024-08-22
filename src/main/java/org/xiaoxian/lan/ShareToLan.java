@@ -53,7 +53,7 @@ public class ShareToLan {
         executorService = Executors.newFixedThreadPool(2);
 
         /* 变量区~ */
-        String fieldName = devMode ? "maxPlayers" : "f_11193_";
+        String fieldName = "maxPlayers";
         Minecraft mc = Minecraft.getInstance();
         IntegratedServer server = mc.getSingleplayerServer();
         ServerConnectionListener networkSystem = server.getConnection();

@@ -79,5 +79,3 @@ For Eclipse
 ```
 ./gradlew genEclipseRuns
 ```
-
-**If you are using `runClient` in the IDEA or Eclipse compilation environment, you need to set the `DevMode` boolean value in `EasyLAN.java` to `true`, otherwise it cannot be executed normally**

@@ -125,7 +125,8 @@ public class GuiEasyLanMain extends Screen {
 
     @Override
     public void render(@Nonnull GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(matrixStack);
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
+
         // 标题
         matrixStack.drawCenteredString(fontRenderer, I18n.get("easylan.setting"), this.width / 2, 15, Color.WHITE.getRGB());
 
@@ -152,8 +153,6 @@ public class GuiEasyLanMain extends Screen {
         // MOTD
         matrixStack.drawString(fontRenderer, I18n.get("easylan.text.motd"), this.width / 2 - 165, 190, 0xFFFFFF);
         MotdTextBox.render(matrixStack, mouseX, mouseY, partialTicks);
-
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
     @Override

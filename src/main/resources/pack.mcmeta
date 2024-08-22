@@ -1,6 +1,6 @@
 {
   "pack": {
-    "description": "EasyLAN",
-    "pack_format": 15
+    "description": "${mod_id} resources",
+    "pack_format": 32
   }
 }

@@ -11,12 +11,11 @@ import javax.annotation.Nonnull;
 import java.awt.Color;
 import java.lang.reflect.Field;
 
-import static org.xiaoxian.EasyLAN.devMode;
 import static org.xiaoxian.util.DrawUtil.drawLine;
 
 public class TextBoxUtil extends EditBox {
 
-    String fieldName = devMode ? "displayPos" : "f_94100_";
+    String fieldName = "displayPos";
     private Field lineScrollOffsetField;
     private long lastUpdateTick = 20;
 

@@ -14,8 +14,8 @@ public class CheckBoxButtonUtil extends ButtonUtil {
     }
 
     @Override
-    public void render(@Nonnull GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+    public void renderWidget(@Nonnull GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
+        super.renderWidget(matrixStack, mouseX, mouseY, partialTicks);
 
         Color color = this.isChecked ? Color.WHITE: Color.GRAY;
         DrawUtil.drawRect(this.getX() + 2, this.getY() + 2, this.width - 4, this.height - 4, color);

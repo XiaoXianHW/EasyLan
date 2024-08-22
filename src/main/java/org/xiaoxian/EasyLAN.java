@@ -13,10 +13,6 @@ public class EasyLAN {
 
     public static final String MOD_ID = "easylan";
 
-    // 如果您在开发环境中使用 runClient 进行测试，请修改此值为true
-    // If you are using runClient for testing in your development environment, change this value to true
-    public static boolean devMode = false;
-
     public static boolean allowPVP = true;
     public static boolean onlineMode = true;
     public static boolean spawnAnimals = true;
