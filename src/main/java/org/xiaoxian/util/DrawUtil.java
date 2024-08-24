@@ -1,13 +1,11 @@
 package org.xiaoxian.util;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.*;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
+import java.util.Objects;
 
 public class DrawUtil {
     public static void drawRect(int x, int y, int width, int height, Color color) {
@@ -21,14 +19,14 @@ public class DrawUtil {
         RenderSystem.setShaderColor(red, green, blue, alpha);
 
         Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder bufferBuilder = tesselator.getBuilder();
+        BufferBuilder bufferBuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
-        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        bufferBuilder.vertex((double)x + width, y, 0.0D).color(red, green, blue, alpha).endVertex();
-        bufferBuilder.vertex(x, y, 0.0D).color(red, green, blue, alpha).endVertex();
-        bufferBuilder.vertex(x, (double)y + height, 0.0D).color(red, green, blue, alpha).endVertex();
-        bufferBuilder.vertex((double)x + width, (double)y + height, 0.0D).color(red, green, blue, alpha).endVertex();
-        tesselator.end();
+        bufferBuilder.addVertex(x + width, y, 0.0F).setColor(red, green, blue, alpha);
+        bufferBuilder.addVertex(x, y, 0.0F).setColor(red, green, blue, alpha);
+        bufferBuilder.addVertex(x, y + height, 0.0F).setColor(red, green, blue, alpha);
+        bufferBuilder.addVertex(x + width, y + height, 0.0F).setColor(red, green, blue, alpha);
+
+        BufferUploader.drawWithShader(Objects.requireNonNull(bufferBuilder.build()));
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.disableBlend();
@@ -38,10 +36,12 @@ public class DrawUtil {
         RenderSystem.setShaderColor(((color >> 16) & 0xFF) / 255.0F, ((color >> 8) & 0xFF) / 255.0F, (color & 0xFF) / 255.0F, ((color >> 24) & 0xFF) / 255.0F);
         RenderSystem.lineWidth(2f);
 
-        BufferBuilder builder = Tesselator.getInstance().getBuilder();
-        builder.begin(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR);
-        builder.vertex(startX, y, 0.0D).color(((color >> 16) & 0xFF) / 255.0F, ((color >> 8) & 0xFF) / 255.0F, (color & 0xFF) / 255.0F, ((color >> 24) & 0xFF) / 255.0F).endVertex();
-        builder.vertex(endX, y, 0.0D).color(((color >> 16) & 0xFF) / 255.0F, ((color >> 8) & 0xFF) / 255.0F, (color & 0xFF) / 255.0F, ((color >> 24) & 0xFF) / 255.0F).endVertex();
-        Tesselator.getInstance().end();
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder bufferBuilder = tesselator.begin(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR);
+
+        bufferBuilder.addVertex(startX, y, 0.0F).setColor(((color >> 16) & 0xFF) / 255.0F, ((color >> 8) & 0xFF) / 255.0F, (color & 0xFF) / 255.0F, ((color >> 24) & 0xFF) / 255.0F);
+        bufferBuilder.addVertex(endX, y, 0.0F).setColor(((color >> 16) & 0xFF) / 255.0F, ((color >> 8) & 0xFF) / 255.0F, (color & 0xFF) / 255.0F, ((color >> 24) & 0xFF) / 255.0F);
+
+        BufferUploader.drawWithShader(Objects.requireNonNull(bufferBuilder.build()));
     }
 }

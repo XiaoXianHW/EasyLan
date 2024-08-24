@@ -34,11 +34,12 @@ public class TextBoxUtil extends EditBox {
     public void renderWidget(@Nonnull GuiGraphics matrixStack, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
             matrixStack.fill(getX(), getY(), getX() + width + 4, getY() + height, new Color(128, 128, 128, 30).getRGB());
+
             RenderSystem.lineWidth(2f);
             drawLine(getX(), getX() + width + 3, getY() + height - 1, new Color(135,206,250).getRGB());
             RenderSystem.lineWidth(1f);
-            int textColor = this.isFocused() ? 14737632 : 7368816;
 
+            int textColor = this.isFocused() ? 14737632 : 7368816;
             int lineScrollOffset = 0;
             try {
                 lineScrollOffset = (int) lineScrollOffsetField.get(this);
