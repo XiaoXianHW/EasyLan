@@ -5,7 +5,6 @@ import net.minecraft.command.CommandServerKick;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.server.*;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
@@ -15,7 +14,7 @@ public class ServerStarting {
 
     @Mod.EventHandler
     public void onServerStarting(FMLServerStartingEvent event) {
-        MinecraftServer minecraftServer = FMLCommonHandler.instance().getMinecraftServerInstance();
+        MinecraftServer minecraftServer = event.getServer();
         ICommandManager commandManager = minecraftServer.getCommandManager();
         if (commandManager instanceof CommandHandler) {
             if (whiteList) {
