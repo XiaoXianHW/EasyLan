@@ -2,6 +2,7 @@ package org.xiaoxian;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.xiaoxian.gui.GuiShareToLanEdit;
 import org.xiaoxian.gui.GuiWorldSelectionEdit;
@@ -51,11 +52,16 @@ public class EasyLAN {
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new GuiWorldSelectionEdit());
         MinecraftForge.EVENT_BUS.register(new GuiShareToLanEdit());
-        MinecraftForge.EVENT_BUS.register(new ServerStarting());
         MinecraftForge.EVENT_BUS.register(new ShareToLan());
 
         GuiShareToLanEdit.PortText = CustomPort;
         GuiShareToLanEdit.MaxPlayerText = CustomMaxPlayer;
+    }
+
+    @Mod.EventHandler
+    public void onServerStarting(FMLServerStartingEvent event) {
+        MinecraftForge.EVENT_BUS.register(this);
+        new ServerStarting().onServerStarting(event);
     }
 }
 
