@@ -15,7 +15,7 @@ public class ServerStarting {
 
     @Mod.EventHandler
     public void onServerStarting(FMLServerStartingEvent event) {
-        MinecraftServer minecraftServer = event.getServer();
+        MinecraftServer minecraftServer = FMLCommonHandler.instance().getMinecraftServerInstance();
         ICommandManager commandManager = minecraftServer.getCommandManager();
         if (commandManager instanceof CommandHandler) {
             if (whiteList) {
